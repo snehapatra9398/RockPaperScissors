@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rock Paper Scissors</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Animated background particles -->
+  <div class="bg-grid"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <div class="wrapper">
+
+    <!-- ===== SCREEN 1: MODE SELECT ===== -->
+    <div id="screen-mode" class="screen active">
+      <div class="logo-block">
+        <span class="logo-icon">✊📄✂️</span>
+        <h1 class="logo-title">ROCK<br>PAPER<br>SCISSORS</h1>
+        <p class="logo-sub">Choose your battle mode</p>
+      </div>
+      <div class="mode-cards">
+        <button class="mode-card" id="btn-vs-cpu" onclick="selectMode('cpu')">
+          <div class="mode-icon">🤖</div>
+          <div class="mode-label">VS COMPUTER</div>
+          <div class="mode-desc">Test your luck against AI</div>
+          <div class="mode-arrow">→</div>
+        </button>
+        <div class="mode-divider">OR</div>
+        <button class="mode-card" id="btn-vs-player" onclick="selectMode('pvp')">
+          <div class="mode-icon">🧑‍🤝‍🧑</div>
+          <div class="mode-label">2 PLAYERS</div>
+          <div class="mode-desc">Challenge a friend locally</div>
+          <div class="mode-arrow">→</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== SCREEN 2: NAME INPUT ===== -->
+    <div id="screen-names" class="screen">
+      <button class="back-btn" onclick="goBack('screen-mode')">← Back</button>
+      <h2 class="section-title" id="names-title">Enter Player Names</h2>
+      <div class="names-form">
+        <div class="input-group">
+          <label id="label-p1">Player 1 Name</label>
+          <input type="text" id="input-p1" maxlength="14" placeholder="e.g. Arjun" />
+        </div>
+        <div class="input-group" id="input-group-p2">
+          <label id="label-p2">Player 2 Name</label>
+          <input type="text" id="input-p2" maxlength="14" placeholder="e.g. Priya" />
+        </div>
+        <button class="cta-btn" onclick="startGame()">LET'S PLAY ⚡</button>
+      </div>
+    </div>
+
+    <!-- ===== SCREEN 3: GAME ===== -->
+    <div id="screen-game" class="screen">
+      <button class="back-btn" onclick="goBack('screen-mode')">← Menu</button>
+
+      <!-- Scoreboard -->
+      <div class="scoreboard">
+        <div class="score-cell" id="score-cell-p1">
+          <div class="player-name" id="name-p1-display">Player 1</div>
+          <div class="score-num" id="score-p1">0</div>
+          <div class="score-label">WINS</div>
+        </div>
+        <div class="score-middle">
+          <div class="round-info" id="round-info">Round <span id="round-num">1</span></div>
+          <div class="vs-badge">VS</div>
+          <div class="draws-info">Draws: <span id="draws-count">0</span></div>
+        </div>
+        <div class="score-cell" id="score-cell-p2">
+          <div class="player-name" id="name-p2-display">Player 2</div>
+          <div class="score-num" id="score-p2">0</div>
+          <div class="score-label">WINS</div>
+        </div>
+      </div>
+
+      <!-- Battle arena -->
+      <div class="arena">
+        <div class="fighter-zone" id="zone-p1">
+          <div class="fighter-name" id="arena-name-p1">P1</div>
+          <div class="choice-display" id="choice-p1">❓</div>
+        </div>
+        <div class="clash-zone">
+          <div class="clash-text" id="clash-text">Choose!</div>
+        </div>
+        <div class="fighter-zone" id="zone-p2">
+          <div class="fighter-name" id="arena-name-p2">P2</div>
+          <div class="choice-display" id="choice-p2">❓</div>
+        </div>
+      </div>
+
+      <!-- PVP turn indicator -->
+      <div id="pvp-turn-banner" class="pvp-turn-banner hidden">
+        <span id="pvp-turn-text">Player 1's Turn — look away, Player 2!</span>
+      </div>
+
+      <!-- Move buttons -->
+      <div class="moves-section">
+        <p class="moves-label" id="moves-label">Make your move:</p>
+        <div class="moves-row">
+          <button class="move-btn" id="btn-rock" onclick="makeMove('rock')">
+            <span class="move-emoji">✊</span>
+            <span class="move-name">ROCK</span>
+          </button>
+          <button class="move-btn" id="btn-paper" onclick="makeMove('paper')">
+            <span class="move-emoji">📄</span>
+            <span class="move-name">PAPER</span>
+          </button>
+          <button class="move-btn" id="btn-scissors" onclick="makeMove('scissors')">
+            <span class="move-emoji">✂️</span>
+            <span class="move-name">SCISSORS</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Result overlay (per round) -->
+      <div id="result-overlay" class="result-overlay hidden">
+        <div class="result-card">
+          <div class="result-emoji" id="result-emoji">🏆</div>
+          <div class="result-text" id="result-text">Player 1 Wins!</div>
+          <div class="result-detail" id="result-detail">Rock beats Scissors</div>
+          <button class="cta-btn small" onclick="nextRound()">Next Round →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SCREEN 4: STATS / END ===== -->
+    <div id="screen-stats" class="screen">
+      <div class="stats-header">
+        <div class="trophy-big" id="stats-trophy">🏆</div>
+        <h2 class="stats-winner" id="stats-winner-text">Player 1 Wins the Match!</h2>
+        <p class="stats-sub" id="stats-sub">Best of the best</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-block p1-color" id="stat-p1-block">
+          <div class="stat-player-name" id="stat-name-p1">P1</div>
+          <div class="stat-row"><span>Rounds Won</span><span class="stat-val" id="stat-p1-wins">0</span></div>
+          <div class="stat-row"><span>Rounds Lost</span><span class="stat-val" id="stat-p1-losses">0</span></div>
+          <div class="stat-row"><span>Win Rate</span><span class="stat-val" id="stat-p1-rate">0%</span></div>
+        </div>
+        <div class="stat-block center-stat">
+          <div class="stat-player-name">MATCH</div>
+          <div class="stat-row"><span>Total Rounds</span><span class="stat-val" id="stat-total">0</span></div>
+          <div class="stat-row"><span>Draws</span><span class="stat-val" id="stat-draws">0</span></div>
+          <div class="stat-row"><span>Mode</span><span class="stat-val" id="stat-mode">CPU</span></div>
+        </div>
+        <div class="stat-block p2-color" id="stat-p2-block">
+          <div class="stat-player-name" id="stat-name-p2">P2</div>
+          <div class="stat-row"><span>Rounds Won</span><span class="stat-val" id="stat-p2-wins">0</span></div>
+          <div class="stat-row"><span>Rounds Lost</span><span class="stat-val" id="stat-p2-losses">0</span></div>
+          <div class="stat-row"><span>Win Rate</span><span class="stat-val" id="stat-p2-rate">0%</span></div>
+        </div>
+      </div>
+
+      <div class="stats-actions">
+        <button class="cta-btn" onclick="playAgain()">Play Again 🔁</button>
+        <button class="cta-btn outline" onclick="goBack('screen-mode')">Change Mode</button>
+      </div>
+    </div>
+
+  </div><!-- /wrapper -->
+
+  <script src="script.js"></script>
+</body>
+</html>
